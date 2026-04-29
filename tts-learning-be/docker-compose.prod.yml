@@ -31,6 +31,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      minio:
+        condition: service_started
     logging:
       driver: 'json-file'
       options:
@@ -42,15 +44,20 @@ services:
     image: minio/minio
     container_name: tts_learning_minio_prod
     restart: always
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
-    ports:
-      - '${MINIO_PORT:-9000}:9000'
-      - '${MINIO_CONSOLE_PORT:-9001}:9001'
+    env_file:
+      - .env.production
+    expose:
+      - '9000'
+      - '9001'
     volumes:
       - minio_data_prod:/data
-    command: server /data --console-address ":9001"
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        export MINIO_ROOT_USER="$${MINIO_ACCESS_KEY:-minioadmin}";
+        export MINIO_ROOT_PASSWORD="$${MINIO_SECRET_KEY:-minioadmin}";
+        exec minio server /data --console-address ":9001"
     logging:
       driver: 'json-file'
       options:

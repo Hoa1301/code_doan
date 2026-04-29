@@ -6,14 +6,14 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copy manifest trước để tận dụng Docker cache layer
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
 # Cài TOÀN BỘ dependencies (bao gồm devDependencies để build)
-RUN yarn install --frozen-lockfile
+RUN npm ci
 
 # Copy source và build
 COPY . .
-RUN yarn build
+RUN npm run build
 
 # ============================================================
 # STAGE 2: Production deps — chỉ cài production dependencies
@@ -22,14 +22,14 @@ FROM node:20-alpine AS deps
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
 # Báo cho yarn và một số bindings C++ biết là đang ở mode production
 ENV NODE_ENV=production
 
 # Cài chỉ production deps + dọn cache + xoá thư mục thừa/file rác để tiết kiệm thêm 20-30MB
-RUN yarn install --frozen-lockfile --production && \
-    yarn cache clean && \
+RUN npm ci --omit=dev && \
+    npm cache clean --force && \
     find node_modules -type f -name "*.md" -delete && \
     find node_modules -type f -name "*.map" -delete
 
