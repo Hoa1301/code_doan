@@ -1,0 +1,408 @@
+Table reports {
+  id string [primary key]
+  created_at date
+  updated_at date
+  intern_id string
+  type string
+  period string
+  title string
+  content string
+  challenges string
+  next_plan string
+  submitted_at date
+  score number
+  feedback string
+  reviewed_by string
+  reviewed_at date
+}
+
+Table evaluations {
+  id string [primary key]
+  created_at date
+  updated_at date
+  intern_id string
+  mentor_id string
+  type string
+  evaluation_date date
+  technical_score number
+  attitude_score number
+  teamwork_score number
+  progress_score number
+  overall_score number
+  strengths string
+  weaknesses string
+  feedback string
+  decision string
+  decision_reason string
+  status string
+}
+
+Table job_positions {
+  id string [primary key]
+  created_at date
+  updated_at date
+  code string
+  title string
+  recruitment_plan_id string
+  department string
+  required_quantity number
+  filled_quantity number
+  description string
+  requirements string
+  benefits string
+  location string
+  salary_range string
+  posted_date date
+  deadline date
+  created_by string
+}
+
+Table interviews {
+  id string [primary key]
+  created_at date
+  updated_at date
+  candidate_id string
+  job_id string
+  interview_date date
+  interview_time string
+  duration_minutes number
+  format string
+  location string
+  interviewer_id string
+  result string
+  notes string
+  feedback string
+}
+
+Table candidates {
+  id string [primary key]
+  created_at date
+  updated_at date
+  user_id string
+  full_name string
+  email string
+  phone string
+  location string
+  avatar_url string
+  education string
+  experience string
+  skills array
+  resume_url string
+  cover_letter string
+  applied_for_job_id string
+  applied_date date
+  match_score number
+  rejection_reason string
+}
+
+Table recruitment_plans {
+  id string [primary key]
+  created_at date
+  updated_at date
+  name string
+  batch string
+  department string
+  description string
+  start_date date
+  end_date date
+  created_by string
+  approved_by string
+  approved_at date
+  rejection_reason string
+}
+
+Table roles {
+  id string [primary key]
+  created_at date
+  updated_at date
+  name string
+  display_name string
+  description string
+}
+
+Table permissions {
+  id string [primary key]
+  created_at date
+  updated_at date
+  name string
+  display_name string
+  module string
+  description string
+}
+
+Table users {
+  id string [primary key]
+  created_at date
+  updated_at date
+  full_name string
+  email string
+  password_hash string
+  phone string
+  avatar_url string
+  email_verified boolean
+  email_verified_at date
+  last_login_at date
+}
+
+Table interns {
+  id string [primary key]
+  created_at date
+  updated_at date
+  user_id string
+  code string
+  candidate_id string
+  track string
+  mentor_id string
+  department string
+  start_date date
+  end_date date
+  overall_progress number
+}
+
+Table quiz_attempts {
+  id string [primary key]
+  created_at date
+  updated_at date
+  quiz_id string
+  intern_id string
+  submitted_at date
+  score number
+  total_points number
+  status string
+  answers json
+}
+
+Table task_comments {
+  id string [primary key]
+  created_at date
+  updated_at date
+  task_id string
+  user_id string
+  comment string
+  attachments array
+}
+
+Table tasks {
+  id string [primary key]
+  created_at date
+  updated_at date
+  code string
+  title string
+  description string
+  intern_id string
+  mentor_id string
+  priority string
+  due_date date
+  attachments array
+  completed_at date
+}
+
+Table quiz_questions {
+  id string [primary key]
+  created_at date
+  updated_at date
+  quiz_id string
+  question_text string
+  question_type string
+  options json
+  correct_answer string
+  points number
+  order_index number
+}
+
+Table modules {
+  id string [primary key]
+  created_at date
+  updated_at date
+  learning_path_id string
+  title string
+  description string
+  order_index number
+  status string
+  passing_score number
+  is_required boolean
+}
+
+Table quizzes {
+  id string [primary key]
+  created_at date
+  updated_at date
+  module_id string
+  learning_path_id string
+  title string
+  description string
+  type string
+  passing_score number
+  time_limit_minutes number
+  total_questions number
+  created_by string
+}
+
+Table learning_paths {
+  id string [primary key]
+  created_at date
+  updated_at date
+  track string
+  title string
+  description string
+  created_by string
+  is_active boolean
+}
+
+Table module_contents {
+  id string [primary key]
+  created_at date
+  updated_at date
+  module_id string
+  type string
+  title string
+  content_url string
+  metadata json
+  order_index number
+}
+
+Table intern_progress {
+  id string [primary key]
+  created_at date
+  updated_at date
+  intern_id string
+  learning_path_id string
+  current_module_id string
+  modules_completed array
+  overall_progress number
+}
+
+Table system_settings {
+  id string [primary key]
+  created_at date
+  updated_at date
+  key string
+  value string
+  data_type string
+  description string
+  updated_by string
+}
+
+Table notifications {
+  id string [primary key]
+  created_at date
+  updated_at date
+  user_id string
+  type string
+  title string
+  message string
+  data json
+  is_read boolean
+  read_at date
+}
+
+Table email_logs {
+  id string [primary key]
+  created_at date
+  updated_at date
+  template_id string
+  recipient_email string
+  subject string
+  body string
+  status string
+  error_message string
+}
+
+Table file_uploads {
+  id string [primary key]
+  created_at date
+  updated_at date
+  uploaded_by string
+  file_name string
+  file_path string
+  file_size number
+  mime_type string
+  entity_type string
+  entity_id string
+}
+
+Table audit_logs {
+  id string [primary key]
+  created_at date
+  updated_at date
+  user_id string
+  action string
+  entity_type string
+  entity_id string
+  old_values json
+  new_values json
+  ip_address string
+  user_agent string
+}
+
+Table approvals {
+  id string [primary key]
+  created_at date
+  updated_at date
+  type enum
+  entity_id string
+  name string
+  title string
+  currentRole string
+  proposedRole string
+  mentor string
+  score number
+  salary number
+  budget number
+  department string
+  hr string
+  priority enum
+  status enum
+  notes string
+  details json
+}
+
+Table email_templates {
+  id string [primary key]
+  created_at date
+  updated_at date
+  code string
+  name string
+  subject string
+  body string
+  variables array
+}
+
+
+Ref: reports.intern_id > interns.id
+Ref: reports.reviewed_by > users.id
+Ref: evaluations.intern_id > interns.id
+Ref: evaluations.mentor_id > users.id
+Ref: job_positions.recruitment_plan_id > recruitment_plans.id
+Ref: job_positions.created_by > users.id
+Ref: interviews.candidate_id > candidates.id
+Ref: interviews.job_id > job_positions.id
+Ref: interviews.interviewer_id > users.id
+Ref: candidates.user_id - users.id
+Ref: candidates.applied_for_job_id > job_positions.id
+Ref: recruitment_plans.created_by > users.id
+Ref: recruitment_plans.approved_by > users.id
+Ref: interns.user_id - users.id
+Ref: interns.candidate_id - candidates.id
+Ref: interns.mentor_id > users.id
+Ref: quiz_attempts.quiz_id > quizzes.id
+Ref: quiz_attempts.intern_id > interns.id
+Ref: task_comments.task_id > tasks.id
+Ref: task_comments.user_id > users.id
+Ref: tasks.intern_id > interns.id
+Ref: tasks.mentor_id > users.id
+Ref: quiz_questions.quiz_id > quizzes.id
+Ref: modules.learning_path_id > learning_paths.id
+Ref: quizzes.module_id > modules.id
+Ref: quizzes.learning_path_id > learning_paths.id
+Ref: quizzes.created_by > users.id
+Ref: learning_paths.created_by > users.id
+Ref: module_contents.module_id > modules.id
+Ref: intern_progress.intern_id > interns.id
+Ref: intern_progress.learning_path_id > learning_paths.id
+Ref: intern_progress.current_module_id > modules.id
+Ref: system_settings.updated_by > users.id
+Ref: notifications.user_id > users.id
+Ref: email_logs.template_id > email_templates.id
+Ref: file_uploads.uploaded_by > users.id
+Ref: audit_logs.user_id > users.id

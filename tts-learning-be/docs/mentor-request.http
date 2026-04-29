@@ -1,0 +1,38 @@
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDk2NTc4OS0yOWZkLTRhNmMtYjljNi0wNGMwNjJlMjI1YjMiLCJlbWFpbCI6ImFkbWluQHN5c3RlbS5jb20iLCJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzE4NDAwNDAsImV4cCI6MTc3MTkyNjQ0MH0.rdW_CewQ5zMvkmJ2RlbBaJLR-fPGGRHdlXyftyjAkKE
+
+# Mentor Request Controller Endpoints
+# Base URL: http://localhost:3001
+# Authorization: Bearer {{TOKEN}}
+
+### Create mentor request (protected)
+POST http://localhost:3001/mentor-requests
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "mentorId": "<mentor-id>",
+  "position": "Frontend Developer",
+  "targetCount": 2,
+  "reason": "Need more capacity for new project"
+}
+
+### Get all mentor requests (protected)
+GET http://localhost:3001/mentor-requests
+Authorization: Bearer {{TOKEN}}
+
+### Get mentor request by ID (protected)
+GET http://localhost:3001/mentor-requests/{{id}}
+Authorization: Bearer {{TOKEN}}
+
+### Update mentor request (protected)
+PATCH http://localhost:3001/mentor-requests/{{id}}
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "status": "APPROVED"
+}
+
+### Delete mentor request (protected)
+DELETE http://localhost:3001/mentor-requests/{{id}}
+Authorization: Bearer {{TOKEN}}

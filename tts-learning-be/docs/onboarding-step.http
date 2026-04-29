@@ -1,0 +1,18 @@
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDk2NTc4OS0yOWZkLTRhNmMtYjljNi0wNGMwNjJlMjI1YjMiLCJlbWFpbCI6ImFkbWluQHN5c3RlbS5jb20iLCJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzE4NDAwNDAsImV4cCI6MTc3MTkyNjQ0MH0.rdW_CewQ5zMvkmJ2RlbBaJLR-fPGGRHdlXyftyjAkKE
+
+# Onboarding Step Controller Endpoints
+# Base URL: http://localhost:3001
+# Authorization: Bearer {{TOKEN}}
+
+### Update status of onboarding step (protected)
+PATCH http://localhost:3001/onboarding-steps/{{id}}/status
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "status": "COMPLETED"
+}
+
+### Get onboarding step by ID (protected)
+GET http://localhost:3001/onboarding-steps/{{id}}
+Authorization: Bearer {{TOKEN}}

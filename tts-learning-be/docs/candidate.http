@@ -1,0 +1,89 @@
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDk2NTc4OS0yOWZkLTRhNmMtYjljNi0wNGMwNjJlMjI1YjMiLCJlbWFpbCI6ImFkbWluQHN5c3RlbS5jb20iLCJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzE4NDAwNDAsImV4cCI6MTc3MTkyNjQ0MH0.rdW_CewQ5zMvkmJ2RlbBaJLR-fPGGRHdlXyftyjAkKE
+
+# Candidate Controller Endpoints
+# Base URL: http://localhost:3001
+# Authorization: Bearer {{TOKEN}}
+
+### Apply (public, no auth)
+POST http://localhost:3001/candidates
+Content-Type: application/json
+
+{
+  "fullName": "John Doe",
+  "email": "john@example.com",
+  "phone": "0123456789",
+  "jobId": "<job-id>",
+  "location": "Hanoi",
+  "education": "Bachelor",
+  "experience": "2 years"
+}
+
+### Apply with CV (public, multipart)
+POST http://localhost:3001/candidates/apply-with-cv
+Content-Type: multipart/form-data
+
+---
+Content-Disposition: form-data; name="cv"; filename="resume.pdf"
+Content-Type: application/pdf
+
+<binary file content>
+---
+Content-Disposition: form-data; name="fullName"
+
+John Doe
+---
+Content-Disposition: form-data; name="email"
+
+john@example.com
+---
+Content-Disposition: form-data; name="phone"
+
+0123456789
+---
+Content-Disposition: form-data; name="jobId"
+
+<job-id>
+---
+Content-Disposition: form-data; name="location"
+
+Hanoi
+---
+Content-Disposition: form-data; name="education"
+
+Bachelor
+---
+Content-Disposition: form-data; name="experience"
+
+2 years
+---
+
+### Get all candidates (protected)
+GET http://localhost:3001/candidates
+Authorization: Bearer {{TOKEN}}
+
+### Get candidate by ID (protected)
+GET http://localhost:3001/candidates/{{id}}
+Authorization: Bearer {{TOKEN}}
+
+### Update candidate (protected)
+PATCH http://localhost:3001/candidates/{{id}}
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "status": "INTERVIEWED"
+}
+
+### Convert to intern (protected)
+POST http://localhost:3001/candidates/{{id}}/convert-to-intern
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "mentorId": "<mentor-id>",
+  "track": "<track>"
+}
+
+### Delete candidate (protected)
+DELETE http://localhost:3001/candidates/{{id}}
+Authorization: Bearer {{TOKEN}}

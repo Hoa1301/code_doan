@@ -1,0 +1,57 @@
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDk2NTc4OS0yOWZkLTRhNmMtYjljNi0wNGMwNjJlMjI1YjMiLCJlbWFpbCI6ImFkbWluQHN5c3RlbS5jb20iLCJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzE4NDAwNDAsImV4cCI6MTc3MTkyNjQ0MH0.rdW_CewQ5zMvkmJ2RlbBaJLR-fPGGRHdlXyftyjAkKE
+
+# Task Controller Endpoints
+# Base URL: http://localhost:3001
+# Authorization: Bearer {{TOKEN}}
+
+### Create task (protected)
+POST http://localhost:3001/tasks
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "title": "Build a CRUD API",
+  "description": "Create users CRUD with NestJS",
+  "internId": "<intern-id>",
+  "mentorId": "<mentor-id>",
+  "dueDate": "2026-03-01T10:00:00Z"
+}
+
+### Get all tasks (protected)
+GET http://localhost:3001/tasks
+Authorization: Bearer {{TOKEN}}
+
+### Get task by ID (protected)
+GET http://localhost:3001/tasks/{{id}}
+Authorization: Bearer {{TOKEN}}
+
+### Update task status (protected)
+PATCH http://localhost:3001/tasks/{{id}}/status
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "status": "IN_PROGRESS"
+}
+
+### Update task details (protected)
+PATCH http://localhost:3001/tasks/{{id}}
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "title": "Updated Title"
+}
+
+### Add task comment (protected)
+POST http://localhost:3001/tasks/{{id}}/comments
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "content": "This is a new comment."
+}
+
+### Delete task (protected)
+DELETE http://localhost:3001/tasks/{{id}}
+Authorization: Bearer {{TOKEN}}

@@ -1,0 +1,49 @@
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDk2NTc4OS0yOWZkLTRhNmMtYjljNi0wNGMwNjJlMjI1YjMiLCJlbWFpbCI6ImFkbWluQHN5c3RlbS5jb20iLCJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzE4NDAwNDAsImV4cCI6MTc3MTkyNjQ0MH0.rdW_CewQ5zMvkmJ2RlbBaJLR-fPGGRHdlXyftyjAkKE
+
+# Evaluation Controller Endpoints
+# Base URL: http://localhost:3001
+# Authorization: Bearer {{TOKEN}}
+
+### Create evaluation (protected)
+POST http://localhost:3001/evaluations
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "internId": "<intern-id>",
+  "mentorId": "<mentor-id>",
+  "score": 0,
+  "comments": "Initial evaluation"
+}
+
+### Get all evaluations (protected)
+GET http://localhost:3001/evaluations
+Authorization: Bearer {{TOKEN}}
+
+### Get evaluation by ID (protected)
+GET http://localhost:3001/evaluations/{{id}}
+Authorization: Bearer {{TOKEN}}
+
+### Update evaluation (protected)
+PATCH http://localhost:3001/evaluations/{{id}}
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "score": 5,
+  "comments": "Updated after review"
+}
+
+### Update decision (protected)
+PATCH http://localhost:3001/evaluations/{{id}}/decision
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "decision": "PASS",
+  "decisionReason": "Meets criteria"
+}
+
+### Delete evaluation (protected)
+DELETE http://localhost:3001/evaluations/{{id}}
+Authorization: Bearer {{TOKEN}}

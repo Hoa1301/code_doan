@@ -1,0 +1,42 @@
+@baseUrl = http://localhost:3001
+@TOKEN = replace-with-admin-jwt
+@recipientEmail = your-test-email@example.com
+
+# Recruitment Mail Controller Endpoints
+# 1) Login as an admin and paste JWT into @TOKEN
+# 2) Replace @recipientEmail with the inbox you want to receive test mail
+# 3) Use /send for direct SMTP testing, /batch for DB template testing
+
+### Send direct email immediately (protected)
+POST {{baseUrl}}/recruitment/mail/send
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "subject": "[TTS Dev] Test mail from recruitment module",
+  "recipients": [
+    {
+      "email": "{{recipientEmail}}",
+      "fullName": "Mail Test Receiver",
+      "htmlBody": "<h2>TTS recruitment mail test</h2><p>If you received this email, SMTP is working correctly.</p><p><strong>Sent at:</strong> 2026-03-15 10:00</p>"
+    }
+  ]
+}
+
+### Send template-based email (protected)
+# Requires templateCode to exist in the email_templates table first.
+POST {{baseUrl}}/recruitment/mail/batch
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "templateCode": "interview_invitation",
+  "recipients": [
+    {
+      "email": "{{recipientEmail}}",
+      "fullName": "Nguyen Van A",
+      "interviewTime": "08:00 25/02/2025",
+      "location": "Van phong Cong ty"
+    }
+  ]
+}

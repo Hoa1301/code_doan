@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # ─── PostgreSQL Database ────────────────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: tts_learning_db_prod
+    restart: always
+    env_file:
+      - .env.production # <-- Bắt buộc thêm dòng này để nó biết user/pass
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Backend NestJS App (Từ Docker Hub) ─────────────────────────────────────
+  app:
+    image: manhwork/tts-be:latest
+    container_name: tts_learning_app_prod
+    restart: always
+    ports:
+      - '${PORT:-3001}:3001'
+    env_file:
+      - .env.production
+    depends_on:
+      db:
+        condition: service_healthy
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  # ─── MinIO Object Storage ───────────────────────────────────────────────────
+  minio:
+    image: minio/minio
+    container_name: tts_learning_minio_prod
+    restart: always
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+    ports:
+      - '${MINIO_PORT:-9000}:9000'
+      - '${MINIO_CONSOLE_PORT:-9001}:9001'
+    volumes:
+      - minio_data_prod:/data
+    command: server /data --console-address ":9001"
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+volumes:
+  postgres_data_prod:
+  minio_data_prod:

@@ -1,0 +1,38 @@
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDk2NTc4OS0yOWZkLTRhNmMtYjljNi0wNGMwNjJlMjI1YjMiLCJlbWFpbCI6ImFkbWluQHN5c3RlbS5jb20iLCJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzE4NDAwNDAsImV4cCI6MTc3MTkyNjQ0MH0.rdW_CewQ5zMvkmJ2RlbBaJLR-fPGGRHdlXyftyjAkKE
+
+# Learning Path Controller Endpoints
+# Base URL: http://localhost:3001
+# Authorization: Bearer {{TOKEN}}
+
+### Create learning path (protected)
+POST http://localhost:3001/learning-paths
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "title": "Backend Mastery",
+  "track": "BACKEND",
+  "description": "Learn backend skills"
+}
+
+### Get learning path by track (public)
+GET http://localhost:3001/learning-paths/track/BACKEND
+
+### Get all learning paths (public)
+GET http://localhost:3001/learning-paths
+
+### Get learning path by ID (public)
+GET http://localhost:3001/learning-paths/{{id}}
+
+### Update learning path (protected)
+PATCH http://localhost:3001/learning-paths/{{id}}
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "description": "Updated details"
+}
+
+### Delete learning path (protected)
+DELETE http://localhost:3001/learning-paths/{{id}}
+Authorization: Bearer {{TOKEN}}

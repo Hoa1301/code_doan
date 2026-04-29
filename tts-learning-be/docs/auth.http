@@ -1,0 +1,31 @@
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDk2NTc4OS0yOWZkLTRhNmMtYjljNi0wNGMwNjJlMjI1YjMiLCJlbWFpbCI6ImFkbWluQHN5c3RlbS5jb20iLCJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzE4NDAwNDAsImV4cCI6MTc3MTkyNjQ0MH0.rdW_CewQ5zMvkmJ2RlbBaJLR-fPGGRHdlXyftyjAkKE
+
+# Auth Controller Endpoints
+# Base URL: http://localhost:3001
+# Authorization: Bearer {{TOKEN}}
+
+### Register a new user
+POST http://localhost:3001/auth/register
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "email": "newuser@example.com",
+  "password": "StrongP@ssw0rd",
+  "firstName": "New",
+  "lastName": "User"
+}
+
+### Login
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "email": "admin@system.com",
+  "password": "StrongP@ssw0rd"
+}
+
+### Get current profile (protected)
+GET http://localhost:3001/auth/profile
+Authorization: Bearer {{TOKEN}}

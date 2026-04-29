@@ -1,0 +1,37 @@
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMDk2NTc4OS0yOWZkLTRhNmMtYjljNi0wNGMwNjJlMjI1YjMiLCJlbWFpbCI6ImFkbWluQHN5c3RlbS5jb20iLCJyb2xlcyI6WyJhZG1pbiJdLCJpYXQiOjE3NzE4NDAwNDAsImV4cCI6MTc3MTkyNjQ0MH0.rdW_CewQ5zMvkmJ2RlbBaJLR-fPGGRHdlXyftyjAkKE
+
+# Email Template Controller Endpoints
+# Base URL: http://localhost:3001
+# Authorization: Bearer {{TOKEN}}
+
+### Create template (protected)
+POST http://localhost:3001/email-templates
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "code": "interview_invitation",
+  "subject": "Interview Invitation",
+  "content": "Dear {{fullName}}, your interview is at {{interviewTime}}."
+}
+
+### Get all templates (protected)
+GET http://localhost:3001/email-templates
+Authorization: Bearer {{TOKEN}}
+
+### Get template by ID (protected)
+GET http://localhost:3001/email-templates/{{id}}
+Authorization: Bearer {{TOKEN}}
+
+### Update template (protected)
+PATCH http://localhost:3001/email-templates/{{id}}
+Content-Type: application/json
+Authorization: Bearer {{TOKEN}}
+
+{
+  "subject": "Updated Subject"
+}
+
+### Delete template (protected)
+DELETE http://localhost:3001/email-templates/{{id}}
+Authorization: Bearer {{TOKEN}}
