@@ -1,7 +1,13 @@
 const DEFAULT_BACKEND_BASE_URL = 'http://103.249.200.85:3001';
+const FALLBACK_BACKEND_BASE_URLS = [
+    DEFAULT_BACKEND_BASE_URL,
+    'http://103.249.200.85:3002',
+    'http://103.249.200.85:10010'
+];
 const BACKEND_BASE_URLS = Array.from(
-    new Set([DEFAULT_BACKEND_BASE_URL, process.env.BACKEND_BASE_URL].filter(Boolean))
+    new Set([process.env.BACKEND_BASE_URL, ...FALLBACK_BACKEND_BASE_URLS].filter(Boolean))
 ) as string[];
+const BACKEND_FETCH_TIMEOUT_MS = Number(process.env.BACKEND_FETCH_TIMEOUT_MS || 7000);
 const HOP_BY_HOP_HEADERS = new Set([
     'connection',
     'content-encoding',
@@ -78,13 +84,17 @@ export default async function handler(req: any, res: any) {
 
     for (const baseUrl of BACKEND_BASE_URLS) {
         const targetUrl = getTargetUrl(baseUrl, targetPath);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), BACKEND_FETCH_TIMEOUT_MS);
 
         try {
             const response = await fetch(targetUrl, {
                 method: req.method,
                 headers,
-                body: requestBody
+                body: requestBody,
+                signal: controller.signal
             });
+            clearTimeout(timeoutId);
 
             response.headers.forEach((value, key) => {
                 if (HOP_BY_HOP_HEADERS.has(key.toLowerCase())) return;
@@ -95,6 +105,7 @@ export default async function handler(req: any, res: any) {
             res.status(response.status).send(Buffer.from(body));
             return;
         } catch (error) {
+            clearTimeout(timeoutId);
             lastError = error;
         }
     }
