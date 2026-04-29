@@ -44,6 +44,15 @@ const getStoredRoles = (): string[] => {
     }
 };
 
+const getEntryPathByRole = (roles: string[]) => {
+    if (roles.includes('hr')) return RouteConfig.RecruitmentDashboard.path;
+    if (roles.includes('mentor')) return RouteConfig.TrainingInternList.path;
+    if (roles.includes('intern')) return RouteConfig.InternLearningPath.path;
+    if (roles.includes('director')) return RouteConfig.DirectorApprovals.path;
+
+    return null;
+};
+
 const ModuleCard: FC<ModuleCardProps> = ({ title, description, icon, color, onClick }) => (
     <Card
         hoverable
@@ -117,18 +126,9 @@ export const ModuleSelectionPage: FC = () => {
                     : [];
                 const roles = Array.from(new Set([roleFromSingleField, ...rolesFromArray].filter(Boolean)));
                 localStorage.setItem('userInfo', JSON.stringify({ ...profileData, role: roles[0] || roleFromSingleField }));
-                if (roleFromSingleField === 'hr' || roleFromSingleField === 'mentor') {
-                    navigate(RouteConfig.RecruitmentDashboard.path);
-                    return;
-                }
-
-                if (roleFromSingleField === 'intern') {
-                    navigate(RouteConfig.InternLearningPath.path);
-                    return;
-                }
-
-                if (roleFromSingleField === 'director') {
-                    navigate(RouteConfig.DirectorApprovals.path);
+                const entryPath = getEntryPathByRole(roles);
+                if (entryPath) {
+                    navigate(entryPath, { replace: true });
                     return;
                 }
                 if (isMounted) {

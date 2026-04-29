@@ -5,6 +5,31 @@ import { RouteConfig } from '../../../constants';
 
 const { Title, Text, Paragraph } = Typography;
 
+const getStoredRoles = (): string[] => {
+    try {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}') as { role?: string; roles?: Array<{ name?: string }> };
+        const roleFromSingleField = String(userInfo.role || '').toLowerCase();
+        const rolesFromArray = Array.isArray(userInfo.roles)
+            ? userInfo.roles.map((role) => String(role?.name || '').toLowerCase()).filter(Boolean)
+            : [];
+
+        return Array.from(new Set([roleFromSingleField, ...rolesFromArray].filter(Boolean)));
+    } catch {
+        return [];
+    }
+};
+
+const getSafeFallbackPath = () => {
+    const roles = getStoredRoles();
+
+    if (roles.includes('hr')) return RouteConfig.RecruitmentDashboard.path;
+    if (roles.includes('mentor')) return RouteConfig.TrainingInternList.path;
+    if (roles.includes('intern')) return RouteConfig.InternLearningPath.path;
+    if (roles.includes('director')) return RouteConfig.DirectorApprovals.path;
+
+    return RouteConfig.ModuleSelection.path;
+};
+
 export const ForbiddenPage = () => {
     const navigate = useNavigate();
 
@@ -115,14 +140,14 @@ export const ForbiddenPage = () => {
                                 <Button
                                     type='primary'
                                     icon={<HomeOutlined />}
-                                    onClick={() => navigate(RouteConfig.ModuleSelection.path)}
+                                    onClick={() => navigate(RouteConfig.ModuleSelection.path, { replace: true })}
                                     style={{ height: '42px', borderRadius: '10px' }}
                                 >
                                     Về trang phân hệ
                                 </Button>
                                 <Button
                                     icon={<ArrowLeftOutlined />}
-                                    onClick={() => navigate(-1)}
+                                    onClick={() => navigate(getSafeFallbackPath(), { replace: true })}
                                     style={{ height: '42px', borderRadius: '10px' }}
                                 >
                                     Quay lại
