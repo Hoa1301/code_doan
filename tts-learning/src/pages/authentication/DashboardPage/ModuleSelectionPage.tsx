@@ -4,6 +4,7 @@ import { TeamOutlined, BookOutlined, SettingOutlined, RightOutlined, GlobalOutli
 import { useNavigate } from 'react-router-dom';
 import { RouteConfig } from '../../../constants';
 import { getProfile, UserProfile } from '../../../services/auth/profile';
+import Cookies from 'js-cookie';
 
 const { Title, Text } = Typography;
 
@@ -28,6 +29,20 @@ const ADMIN_ROLES = ['admin', 'super_admin'];
 const RECRUITMENT_ROLES = ['hr', ...ADMIN_ROLES];
 const TRAINING_ROLES = ['mentor', 'intern', ...ADMIN_ROLES];
 const DIRECTOR_ROLES = ['director', ...ADMIN_ROLES];
+
+const getStoredRoles = (): string[] => {
+    try {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}') as { role?: string; roles?: Array<{ name?: string }> };
+        const roleFromSingleField = String(userInfo.role || '').toLowerCase();
+        const rolesFromArray = Array.isArray(userInfo.roles)
+            ? userInfo.roles.map((role) => String(role?.name || '').toLowerCase()).filter(Boolean)
+            : [];
+
+        return Array.from(new Set([roleFromSingleField, ...rolesFromArray].filter(Boolean)));
+    } catch {
+        return [];
+    }
+};
 
 const ModuleCard: FC<ModuleCardProps> = ({ title, description, icon, color, onClick }) => (
     <Card
@@ -86,8 +101,8 @@ const ModuleCard: FC<ModuleCardProps> = ({ title, description, icon, color, onCl
 
 export const ModuleSelectionPage: FC = () => {
     const navigate = useNavigate();
-    const [currentRoles, setCurrentRoles] = useState<string[]>([]);
-    const [role, setRole] = useState("");
+    const [currentRoles, setCurrentRoles] = useState<string[]>(() => getStoredRoles());
+    const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
     useEffect(() => {
         let isMounted = true;
@@ -97,11 +112,11 @@ export const ModuleSelectionPage: FC = () => {
                 const response = await getProfile();
                 const profileData = (response.data || {}) as UserProfile & { role?: string };
                 const roleFromSingleField = String(profileData.role || '').toLowerCase();
-                setRole(roleFromSingleField)
                 const rolesFromArray = Array.isArray(profileData.roles)
                     ? profileData.roles.map((role) => String(role?.name || '').toLowerCase()).filter(Boolean)
                     : [];
                 const roles = Array.from(new Set([roleFromSingleField, ...rolesFromArray].filter(Boolean)));
+                localStorage.setItem('userInfo', JSON.stringify({ ...profileData, role: roles[0] || roleFromSingleField }));
                 if (roleFromSingleField === 'hr' || roleFromSingleField === 'mentor') {
                     navigate(RouteConfig.RecruitmentDashboard.path);
                     return;
@@ -120,8 +135,16 @@ export const ModuleSelectionPage: FC = () => {
                     setCurrentRoles(roles);
                 }
             } catch {
+                Cookies.remove('accessToken', { path: '/' });
+                Cookies.remove('accessToken');
+                localStorage.removeItem('userInfo');
                 if (isMounted) {
                     setCurrentRoles([]);
+                    navigate(RouteConfig.LoginPage.path, { replace: true });
+                }
+            } finally {
+                if (isMounted) {
+                    setIsLoadingProfile(false);
                 }
             }
         };
@@ -185,6 +208,10 @@ export const ModuleSelectionPage: FC = () => {
 
         return module.allowedRoles.some((role) => currentRoles.includes(role));
     });
+
+    if (isLoadingProfile && currentRoles.length === 0) {
+        return null;
+    }
 
     return (
         <div

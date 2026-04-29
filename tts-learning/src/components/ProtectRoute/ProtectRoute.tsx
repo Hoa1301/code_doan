@@ -13,6 +13,7 @@ export const ProtectRoute = ({ children, allowedRoles }: ProtectRouteProps) => {
     const token = Cookies.get('accessToken');
     const [isCheckingRole, setIsCheckingRole] = useState<boolean>(!!allowedRoles?.length);
     const [hasRoleAccess, setHasRoleAccess] = useState<boolean>(true);
+    const [isAuthInvalid, setIsAuthInvalid] = useState<boolean>(false);
 
     useEffect(() => {
         if (!token || !allowedRoles?.length) {
@@ -41,7 +42,11 @@ export const ProtectRoute = ({ children, allowedRoles }: ProtectRouteProps) => {
                     setHasRoleAccess(isAllowed);
                 }
             } catch {
+                Cookies.remove('accessToken', { path: '/' });
+                Cookies.remove('accessToken');
+                localStorage.removeItem('userInfo');
                 if (isMounted) {
+                    setIsAuthInvalid(true);
                     setHasRoleAccess(false);
                 }
             } finally {
@@ -60,6 +65,10 @@ export const ProtectRoute = ({ children, allowedRoles }: ProtectRouteProps) => {
 
     if (!token) {
         return <Navigate to={RouteConfig.LoginPage.path} />;
+    }
+
+    if (isAuthInvalid) {
+        return <Navigate to={RouteConfig.LoginPage.path} replace />;
     }
 
     if (isCheckingRole) {

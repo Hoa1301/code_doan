@@ -2,7 +2,7 @@ import { message } from 'antd';
 import axios, { AxiosInstance } from 'axios';
 import Cookies from 'js-cookie';
 
-const DEFAULT_API_BASE_URL = '/api/';
+const DEFAULT_API_BASE_URL = import.meta.env.PROD ? '/api/' : 'http://localhost:10010/';
 const API_BASE_URL = String(import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL).replace(/\/?$/, '/');
 const API_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT || 10000);
 
@@ -116,7 +116,9 @@ class Http {
                 if (res.errorCode !== 0) {
                     if (res.errorCode === 1003) {
                         message.error(res.message || 'Phiên đăng nhập đã hết hạn');
+                        Cookies.remove('accessToken', { path: '/' });
                         Cookies.remove('accessToken');
+                        localStorage.removeItem('userInfo');
                         // window.location.href = '/login';
                     } else {
                         message.error(res.message || 'Có lỗi xảy ra');

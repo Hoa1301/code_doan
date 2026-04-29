@@ -21,6 +21,15 @@ const loginSchema = z.object({
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
+const getPrimaryRole = (profileData?: Partial<UserProfile> & { role?: string }, fallbackRole = '') => {
+    const roleFromSingleField = String(profileData?.role || '').toLowerCase();
+    const roleFromRolesArray = Array.isArray(profileData?.roles)
+        ? String(profileData.roles[0]?.name || '').toLowerCase()
+        : '';
+
+    return roleFromSingleField || roleFromRolesArray || String(fallbackRole || '').toLowerCase();
+};
+
 export const LoginPage = () => {
     const navigate = useNavigate();
     const { setIsAuthenticated } = useAuth();
@@ -58,9 +67,16 @@ export const LoginPage = () => {
                 Cookies.set('accessToken', response.accessToken, { path: '/' });
                 setIsAuthenticated(true);
 
-                const profile = await getProfile();
-                const profileData = (profile.data || {}) as UserProfile & { role?: string };
-                const role = String(profileData.role || '').toLowerCase();
+                let profileData: (UserProfile & { role?: string }) | undefined;
+                try {
+                    const profile = await getProfile();
+                    profileData = (profile.data || {}) as UserProfile & { role?: string };
+                } catch {
+                    profileData = undefined;
+                }
+
+                const role = getPrimaryRole(profileData, response.userInfo?.role);
+                localStorage.setItem('userInfo', JSON.stringify({ ...response.userInfo, role }));
                 notify.success('Đăng nhập thành công!');
 
                 switch (role) {
