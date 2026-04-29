@@ -18,12 +18,7 @@ export const config = {
 };
 
 const getTargetUrl = (req: any) => {
-    const fallbackPath = String(req.url || '')
-        .split('?')[0]
-        .replace(/^\/api\/?/, '');
-    const path = Array.isArray(req.query.path)
-        ? req.query.path.join('/')
-        : String(req.query.path || fallbackPath);
+    const path = String(req.query.path || '').replace(/^\/+/, '');
     const query = new URLSearchParams();
 
     Object.entries(req.query).forEach(([key, value]) => {
@@ -63,8 +58,10 @@ export default async function handler(req: any, res: any) {
 
     Object.entries(req.headers).forEach(([key, value]) => {
         if (!value) return;
-        if (key.toLowerCase() === 'host' || key.toLowerCase() === 'content-length') return;
-        if (HOP_BY_HOP_HEADERS.has(key.toLowerCase())) return;
+        const normalizedKey = key.toLowerCase();
+
+        if (normalizedKey === 'host' || normalizedKey === 'content-length') return;
+        if (HOP_BY_HOP_HEADERS.has(normalizedKey)) return;
 
         headers.set(key, Array.isArray(value) ? value.join(',') : value);
     });
