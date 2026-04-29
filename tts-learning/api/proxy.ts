@@ -1,6 +1,6 @@
 const DEFAULT_BACKEND_BASE_URL = 'http://103.249.200.85:3001';
 const BACKEND_BASE_URLS = Array.from(
-    new Set([process.env.BACKEND_BASE_URL, DEFAULT_BACKEND_BASE_URL].filter(Boolean))
+    new Set([DEFAULT_BACKEND_BASE_URL, process.env.BACKEND_BASE_URL].filter(Boolean))
 ) as string[];
 const HOP_BY_HOP_HEADERS = new Set([
     'connection',
