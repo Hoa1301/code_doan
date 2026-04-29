@@ -10,6 +10,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { RouteConfig } from '../../../constants';
 import { notify } from '../../../utils/notify';
 import { getProfile, UserProfile } from '../../../services/auth/profile';
+import backgroundImageUrl from '../../../assets/images/background.png';
 
 const { Title } = Typography;
 
@@ -110,7 +111,7 @@ export const LoginPage = () => {
         <div
             style={{
                 minHeight: '100vh',
-                backgroundImage: `url('public/assets/background.png')`,
+                backgroundImage: `url(${backgroundImageUrl})`,
                 backgroundSize: 'cover',
                 objectFit: 'cover',
                 display: 'flex'

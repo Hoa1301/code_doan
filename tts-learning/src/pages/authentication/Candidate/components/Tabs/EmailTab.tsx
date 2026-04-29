@@ -87,7 +87,6 @@ const TABS = [
     { key: 'rejected', label: 'Trượt phỏng vấn' },
     { key: 'offer', label: 'Mời nhận việc' }
 ];
-const API_BASE = 'http://localhost:10010';
 const TEMPLATES = {
     interview: {
         id: 'interview',

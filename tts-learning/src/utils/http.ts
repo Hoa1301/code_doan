@@ -2,6 +2,10 @@ import { message } from 'antd';
 import axios, { AxiosInstance } from 'axios';
 import Cookies from 'js-cookie';
 
+const DEFAULT_API_BASE_URL = '/api/';
+const API_BASE_URL = String(import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL).replace(/\/?$/, '/');
+const API_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT || 10000);
+
 class Http {
     instance: AxiosInstance;
     private instancePublic: AxiosInstance;
@@ -52,8 +56,8 @@ class Http {
     constructor() {
         // Instance cho các API cần authentication
         this.instance = axios.create({
-            baseURL: 'http://localhost:10010/',
-            timeout: 10000,
+            baseURL: API_BASE_URL,
+            timeout: API_TIMEOUT,
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -62,8 +66,8 @@ class Http {
 
         // Instance cho các API public không cần authentication
         this.instancePublic = axios.create({
-            baseURL: 'http://localhost:10010/',
-            timeout: 10000,
+            baseURL: API_BASE_URL,
+            timeout: API_TIMEOUT,
             headers: {
                 'Content-Type': 'application/json'
             },

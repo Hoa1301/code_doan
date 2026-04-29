@@ -18,6 +18,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { getProfile, UserProfile } from '../../../services/auth/profile';
+import logoUrl from '../../../assets/images/logo.png';
 
 const { Sider } = Layout;
 const { Text } = Typography;
@@ -327,7 +328,7 @@ export const NavbarDashboard = ({ collapsed, isMobile, isLaptop, mobileOpen, onM
                 }}
             >
                 <img
-                    src='/assets/logo.png'
+                    src={logoUrl}
                     alt='logo'
                     style={{
                         width: collapsed ? '32px' : '36px',

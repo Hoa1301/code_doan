@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useJobPositions } from '../../../hooks/Recruitment/useJobPositions';
 import { RouteConfig } from '../../../constants';
+import heroSectionImageUrl from '../../../assets/images/hero-section.jpg';
+import logoSvtechUrl from '../../../assets/images/logo_svtech.png';
 
 const { Header, Content, Footer } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -48,7 +50,7 @@ export const JobBoardPage = () => {
                     onClick={() => navigate('/')}
                 >
                     <img
-                        src='/assets/logo_svtech.png'
+                        src={logoSvtechUrl}
                         alt='logo'
                         style={{
                             width: '220px',
@@ -75,7 +77,7 @@ export const JobBoardPage = () => {
                 {/* Hero Section */}
                 <div
                     style={{
-                        backgroundImage: `url('/assets/hero-section.jpg')`,
+                        backgroundImage: `url(${heroSectionImageUrl})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',

@@ -19,6 +19,7 @@ import { useCreateCandidateWithCv } from '../../../hooks/Recruitment/useCandidat
 import { RouteConfig } from '../../../constants';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { notify } from '../../../utils/notify';
+import logoSvtechUrl from '../../../assets/images/logo_svtech.png';
 
 const { Header, Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -115,7 +116,7 @@ export const JobDetailPage = () => {
                     onClick={() => navigate(RouteConfig.PublicJobBoard.path)}
                 >
                     <img
-                        src='/assets/logo_svtech.png'
+                        src={logoSvtechUrl}
                         alt='logo'
                         style={{
                             width: '220px',
