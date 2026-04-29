@@ -1,4 +1,7 @@
-const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL || 'http://103.249.200.85:3002';
+const DEFAULT_BACKEND_BASE_URL = 'http://103.249.200.85:3001';
+const BACKEND_BASE_URLS = Array.from(
+    new Set([process.env.BACKEND_BASE_URL, DEFAULT_BACKEND_BASE_URL].filter(Boolean))
+) as string[];
 const HOP_BY_HOP_HEADERS = new Set([
     'connection',
     'content-encoding',
@@ -17,7 +20,7 @@ export const config = {
     }
 };
 
-const getTargetUrl = (req: any) => {
+const getTargetPath = (req: any) => {
     const path = String(req.query.path || '').replace(/^\/+/, '');
     const query = new URLSearchParams();
 
@@ -35,7 +38,11 @@ const getTargetUrl = (req: any) => {
     });
 
     const queryString = query.toString();
-    return `${BACKEND_BASE_URL.replace(/\/$/, '')}/${path}${queryString ? `?${queryString}` : ''}`;
+    return `${path}${queryString ? `?${queryString}` : ''}`;
+};
+
+const getTargetUrl = (baseUrl: string, targetPath: string) => {
+    return `${baseUrl.replace(/\/$/, '')}/${targetPath}`;
 };
 
 const readRequestBody = async (req: any) => {
@@ -53,7 +60,7 @@ const readRequestBody = async (req: any) => {
 };
 
 export default async function handler(req: any, res: any) {
-    const targetUrl = getTargetUrl(req);
+    const targetPath = getTargetPath(req);
     const headers = new Headers();
 
     Object.entries(req.headers).forEach(([key, value]) => {
@@ -66,26 +73,36 @@ export default async function handler(req: any, res: any) {
         headers.set(key, Array.isArray(value) ? value.join(',') : value);
     });
 
-    try {
-        const response = await fetch(targetUrl, {
-            method: req.method,
-            headers,
-            body: await readRequestBody(req)
-        });
+    let lastError: unknown;
+    const requestBody = await readRequestBody(req);
 
-        response.headers.forEach((value, key) => {
-            if (HOP_BY_HOP_HEADERS.has(key.toLowerCase())) return;
-            res.setHeader(key, value);
-        });
+    for (const baseUrl of BACKEND_BASE_URLS) {
+        const targetUrl = getTargetUrl(baseUrl, targetPath);
 
-        const body = await response.arrayBuffer();
-        res.status(response.status).send(Buffer.from(body));
-    } catch (error) {
-        res.status(502).json({
-            errorCode: 502,
-            message: 'Cannot connect to backend API',
-            target: targetUrl,
-            detail: error instanceof Error ? error.message : String(error)
-        });
+        try {
+            const response = await fetch(targetUrl, {
+                method: req.method,
+                headers,
+                body: requestBody
+            });
+
+            response.headers.forEach((value, key) => {
+                if (HOP_BY_HOP_HEADERS.has(key.toLowerCase())) return;
+                res.setHeader(key, value);
+            });
+
+            const body = await response.arrayBuffer();
+            res.status(response.status).send(Buffer.from(body));
+            return;
+        } catch (error) {
+            lastError = error;
+        }
     }
+
+    res.status(502).json({
+        errorCode: 502,
+        message: 'Cannot connect to backend API',
+        targets: BACKEND_BASE_URLS.map((baseUrl) => getTargetUrl(baseUrl, targetPath)),
+        detail: lastError instanceof Error ? lastError.message : String(lastError)
+    });
 }
