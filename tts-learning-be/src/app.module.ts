@@ -12,6 +12,7 @@ import { SocketModule } from './providers/socket/socket.module';
 import { MailProviderModule } from './providers/mailer/mailer.module';
 import { StorageModule } from './common/storage/storage.module';
 import { DashboardModule } from './modules/system/dashboard.module';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -36,5 +37,6 @@ import { DashboardModule } from './modules/system/dashboard.module';
     SocketModule,
     MailProviderModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}

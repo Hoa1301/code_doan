@@ -22,7 +22,7 @@ services:
     container_name: tts_learning_app_prod
     restart: always
     ports:
-      - '${PORT:-3001}:3001'
+      - '0.0.0.0:${PORT:-3001}:3001'
     env_file:
       - .env.production
     depends_on:
