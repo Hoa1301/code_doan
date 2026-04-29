@@ -18,7 +18,12 @@ export const config = {
 };
 
 const getTargetUrl = (req: any) => {
-    const path = Array.isArray(req.query.path) ? req.query.path.join('/') : String(req.query.path || '');
+    const fallbackPath = String(req.url || '')
+        .split('?')[0]
+        .replace(/^\/api\/?/, '');
+    const path = Array.isArray(req.query.path)
+        ? req.query.path.join('/')
+        : String(req.query.path || fallbackPath);
     const query = new URLSearchParams();
 
     Object.entries(req.query).forEach(([key, value]) => {
